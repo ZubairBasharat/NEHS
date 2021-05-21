@@ -95,6 +95,7 @@ Route::get('/', function () { return redirect()->route('login'); })->middleware(
     Route::post('/savedata', [App\Http\Controllers\HomeController::class, 'savedata'])->name('savedata');
     Route::get('form/build', [App\Http\Controllers\FormBuilder::class, 'showBuilder'])->name('form.build');
     Route::post('form/show', [App\Http\Controllers\FormBuilder::class,'show'])->name('form.show');
+    Route::post('/export-pdf', [App\Http\Controllers\FormBuilder::class, 'exportPdf']);
     Route::post('form/save', [App\Http\Controllers\FormBuilder::class,'save'])->name('form.save');
     Route::resource('admin-resources', \App\Http\Controllers\ResourcesController::class);
 
@@ -111,7 +112,7 @@ Route::get('/', function () { return redirect()->route('login'); })->middleware(
     Route::resource('userpersonnel', \App\Http\Controllers\User\UserController::class);
     Route::resource('usertests', \App\Http\Controllers\User\UserCourseTestsController::class);
     Route::resource('usercertificate', \App\Http\Controllers\User\UserCertificateController::class);
-    
+
 
     });
 //enduseer

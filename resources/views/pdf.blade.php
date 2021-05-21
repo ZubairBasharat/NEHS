@@ -6,7 +6,7 @@
 
 @section('dashboard')
     <div class="card card-custom">
-        <button class="btn btn-primary"onclick="pdf()">PDF</button>
+        <button class="btn btn-primary" onclick="pdf()">PDF</button>
     </div>
     <div class="container" id="print_area12">
         <table class="table border m-0">

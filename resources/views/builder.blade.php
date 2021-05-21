@@ -5,6 +5,16 @@
         .save-template{
             display:none !important;
         }
+        .digisigns{
+            width: 100%;
+            height:200px;
+            border:1px solid grey;
+        }
+        .digisigns .digisigns-clear-btn{
+            position: absolute;
+            bottom: 11px;
+            right: 6px;
+        }
     </style>
 @endsection
 @section('dashboard')
@@ -31,13 +41,77 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
     <script src="https://formbuilder.online/assets/js/form-builder.min.js"></script>
-    <script src="https://formbuilder.online/assets/js/form-render.min.js"></script>
+        <script src="https://formbuilder.online/assets/js/form-render.min.js"></script>
 
     <script>
-        // jQuery(function($) {
-        //     $(document.getElementById('fb-editor')).formBuilder();
-        // });
+        {{--const export2Pdf = async () => {--}}
+        {{--    let printHideClass = document.querySelectorAll('.print-hide');--}}
+        {{--    printHideClass.forEach(item => item.style.display = 'none');--}}
+        {{--    await fetch('http://localhost:8000/export-pdf', {--}}
+        {{--        method: 'POST',--}}
+        {{--        body:JSON.stringify({formm:{{$data}} }),--}}
+        {{--    }).then(response => {--}}
+        {{--        if (response.ok) {--}}
+        {{--            response.json().then(response => {--}}
+        {{--                var link = document.createElement('a');--}}
+        {{--                link.href = response;--}}
+        {{--                link.click();--}}
+        {{--                printHideClass.forEach(item => item.style.display='');--}}
+        {{--            });--}}
+        {{--        }--}}
+        {{--    }).catch(error => console.log(error));--}}
+        }
+    </script>
 
+    <script>
+        if (!window.fbControls){  window.fbControls = new Array();}
+        window.fbControls.push(function (controlClass) {
+
+            class controlDigiSign extends controlClass {
+                static get definition() {
+                    return {
+                        icon: '✅',
+                        i18n: {
+                            default: 'Signatures',
+                        },
+                    }
+                }
+                configure() {
+                    this.js =[
+                        '{{asset('assets/plugins/custom/signature/js/jquery.ui.touch-punch.min.js')}}',
+                        '{{asset('assets/plugins/custom/signature/js/jquery.signature.min.js')}}'
+                    ];
+                    this.css = [
+                        '//ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/south-street/jquery-ui.css',
+                        '{{asset('assets/plugins/custom/signature/css/jquery.signature.css')}}'
+                    ];
+                }
+                build() {
+                    let isreq=(this.config.required)?'required':'';
+                    console.log('req config:',this.config);
+                    return this.markup('div', '<input class="digisigns-input" id="i'+this.config.id+'" name="'+this.config.name+'" type="hidden" '+isreq+' />' +
+                        '<button type="button" data-digisign="'+this.config.id+'" class="digisigns-clear-btn">Clear</button>', {id: this.config.id,name:this.config.name,class:'digisigns'});
+                }
+                onRender() {
+                    let id=this.config.id;
+                    let ob_t='#'+id;
+                    $(ob_t).signature({
+                        guideline: true,
+                        change: function(event, ui) {
+                            $('#i'+event.target.id).val($(ob_t).signature('toDataURL'));
+                        }
+                    } );
+                    $(ob_t+' button.digisigns-clear-btn').click(function() {
+                        $(ob_t).signature('clear');
+                        $('#i'+id).val();
+                    });
+                }
+            }
+
+            // register this control for the following types & text subtypes
+            controlClass.register('digiSign', controlDigiSign);
+            return controlDigiSign;
+        });
 
         jQuery(function($) {
             var fbEditor = document.getElementById('build-wrap');
@@ -56,18 +130,21 @@
                 // set < code > innerText with escaped markup
                 // code.innerText = addLineBreaks($markup.formRender("html"));
                 var full_form =addLineBreaks($markup.formRender("html"));
+                // console.log('fullform:',full_form);
+                // return;/
                 // $('#apendd').append(full_form);
                 $('#insert').val(full_form);
                // alert($('#insert').val());
                 $('#ex_form').submit();
             });
-            document.getElementById('getJS').addEventListener('click', function() {
-                var full_form=formBuilder.actions.getData('json');
-                $('#insert').val(full_form);
-                $('#ex_form').submit();
 
-                console.log(formBuilder.actions.getData());
-            });
+            // document.getElementById('getJS').addEventListener('click', function() {
+            //     var full_form=formBuilder.actions.getData('json');
+            //     $('#insert').val(full_form);
+            //     $('#ex_form').submit();
+            //
+            //     console.log(formBuilder.actions.getData());
+            // });
 
         });
 

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Barryvdh\DomPDF\Facade as PDF;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
@@ -19,6 +20,14 @@ class FormBuilder extends Controller
 
 
         $data=$request->formm;
+        $pdf = PDF::loadHTML($request->formm);
+        $path = public_path('pdf_docs/'); // <--- folder to store the pdf documents into the server;
+        $fileName =  time().'.'. 'pdf' ; // <--giving the random filename,
+        $pdf->save($path . '/' . $fileName);
+        sleep(3);
+        $generated_pdf_link = url('pdf_docs/'.$fileName);
+//        return response()->json($generated_pdf_link);
+        return response()->download('pdf_docs/'.$fileName);
 
 //        dd($data);
 //        foreach ($data as $key=>$value){
@@ -47,17 +56,18 @@ class FormBuilder extends Controller
 //        }
 
 
-        return view('show',compact('data'));
+//        return view('show',compact('data'));
 
 
     }
+
+
+
     public function save(Request $request){
 
 //        dd($request->all());
         $data=$request->all();
-
         return view('pdf',compact('data'));
-
 
     }
 
