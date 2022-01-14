@@ -1,0 +1,3 @@
+USER,test22@example.com,farhan123,storage/img/logo/HuNNAAVngtEozLlGqDsaqMJL1Puq9zHurWZeUEqO.jpg,1
+Admin admin,admin3@gmail.com,farhan123,storage/img/logo/HuNNAAVngtEozLlGqDsaqMJL1Puq9zHurWZeUEqO.jpg,1
+user,userr@gmail.com,farhan123,,1
